@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using note.Dtos;
@@ -38,7 +39,10 @@ public class NoteController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateNote(NoteForCreateDto noteForCreate)
     {
-        Note noteDb = new Note(noteForCreate.Content, noteForCreate.Name);
+        MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<NoteForCreateDto, Note>());
+        Mapper mapper = new Mapper(config);
+        Note noteDb = mapper.Map<Note>(noteForCreate);
+        
         _context.Notes?.Add(noteDb);
         await _context.SaveChangesAsync();
 
