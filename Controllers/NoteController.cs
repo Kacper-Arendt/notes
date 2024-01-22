@@ -11,10 +11,12 @@ namespace note.Controllers;
 public class NoteController : ControllerBase
 {
     private readonly DatabaseContext _context; 
+    private readonly IMapper _mapper;
 
-    public NoteController(DbContextOptions options)
+    public NoteController(DatabaseContext context, IMapper mapper)
     {
-        _context = new DatabaseContext(options);
+        _context = context;
+        _mapper = mapper;
     }
 
     private Note? GetNoteById(int id)
@@ -23,25 +25,27 @@ public class NoteController : ControllerBase
     }
     
     [HttpGet]
-    public IEnumerable<Note>? GetNotes()
+    public IActionResult GetNotes()
     {
         List<Note?>? notes = _context.Notes?.ToList();
-        return notes;
+        
+        List<NoteForReadDto> noteDtos = _mapper.Map<List<NoteForReadDto>>(notes);
+
+        return Ok(noteDtos);
     }
     
     [HttpGet("{id}")]
     public IActionResult GetNote(int id)
     {
         Note? note = GetNoteById(id);
-        return note != null ? Ok(note) : NotFound();
+        NoteForReadDto noteDto = _mapper.Map<NoteForReadDto>(note);
+        return noteDto != null ? Ok(noteDto) : NotFound();
     }
     
     [HttpPost]
     public async Task<IActionResult> CreateNote(NoteForCreateDto noteForCreate)
     {
-        MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<NoteForCreateDto, Note>());
-        Mapper mapper = new Mapper(config);
-        Note noteDb = mapper.Map<Note>(noteForCreate);
+        Note noteDb = _mapper.Map<Note>(noteForCreate);
         
         _context.Notes?.Add(noteDb);
         await _context.SaveChangesAsync();
@@ -50,14 +54,15 @@ public class NoteController : ControllerBase
     }   
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateNote(int id, Note noteToUpdate)
+    public async Task<IActionResult> UpdateNote(int id, NoteForUpdateDto noteToUpdate)
     {
         if (id != noteToUpdate.Id)
         {
             return BadRequest();
         }
+        Note note = _mapper.Map<Note>(noteToUpdate);
         
-        _context.Entry(noteToUpdate).State = EntityState.Modified;
+        _context.Entry(note).State = EntityState.Modified;
         
         try
         {
