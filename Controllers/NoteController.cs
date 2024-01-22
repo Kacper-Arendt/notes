@@ -60,6 +60,7 @@ public class NoteController : ControllerBase
         {
             return BadRequest();
         }
+        
         Note note = _mapper.Map<Note>(noteToUpdate);
         
         _context.Entry(note).State = EntityState.Modified;
