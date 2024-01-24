@@ -6,6 +6,7 @@ using note.Models;
 
 namespace note.Controllers;
 
+// [Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class NoteController : ControllerBase

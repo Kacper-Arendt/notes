@@ -11,5 +11,7 @@ public class MappingProfile: Profile
         CreateMap<NoteForCreateDto, Note>();
         CreateMap<Note, NoteForReadDto>();
         CreateMap<NoteForUpdateDto, Note>();
+
+        CreateMap<UserAuthForReadDto, UserAuthentication>();
     }
 }

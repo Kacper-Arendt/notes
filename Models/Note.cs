@@ -12,6 +12,4 @@ public class Note(string content, string name)
     
     [Required]
     public string Content { get; init; } = content;
-
-
 }
