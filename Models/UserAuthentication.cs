@@ -1,20 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace note.Models;
 
-[Index(nameof(Email), IsUnique = true)]
-public class UserAuthentication(string email)
+public class UserAuthentication(byte[] passwordHash, byte[] salt)
 {
     [Key]
-    [Required]
-    [MaxLength(100)]
-    [EmailAddress]
-    public string Email { get; set; } = email;
+    [ForeignKey("User")]
+    public int UserId { get; set; }
 
     [Required]
-    public byte[]? PasswordHash { get; set; }
+    public byte[] PasswordHash { get; set; } = passwordHash;
 
     [Required]
-    public byte[]? Salt { get; set; }
+    public byte[] Salt { get; set; } = salt;
+    
+    public User User { get; set; }
 }

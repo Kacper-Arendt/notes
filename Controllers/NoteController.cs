@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using note.Dtos;
@@ -6,7 +7,7 @@ using note.Models;
 
 namespace note.Controllers;
 
-// [Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class NoteController : ControllerBase
@@ -31,7 +32,6 @@ public class NoteController : ControllerBase
         List<Note?>? notes = _context.Notes?.ToList();
         
         List<NoteForReadDto> noteDtos = _mapper.Map<List<NoteForReadDto>>(notes);
-
         return Ok(noteDtos);
     }
     

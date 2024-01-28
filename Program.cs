@@ -19,18 +19,34 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 });
 
-var jwtKey = builder.Configuration.GetSection("AppSettings:PasswordKey").Get<string>();
+builder.Services.AddCors((options) =>
+{
+    options.AddPolicy("DevCors", (corsBuilder) =>
+    {
+        corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://localhost:8000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+    options.AddPolicy("ProdCors", (corsBuilder) =>
+    {
+        corsBuilder.WithOrigins("https://myProductionSite.com")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+string? tokenKey = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters() 
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey ?? "")),
+            ValidateIssuer = false,
+            ValidateAudience = false
         };
     });
 
@@ -44,12 +60,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger();    
+    app.UseCors("DevCors");
     app.UseSwaggerUI();
 }
 else
 {
     app.UseHttpsRedirection();
+    app.UseCors("ProdCors");
 }
 
 using (var scope = app.Services.CreateScope())

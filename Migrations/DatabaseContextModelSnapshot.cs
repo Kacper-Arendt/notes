@@ -56,11 +56,6 @@ namespace note.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -68,9 +63,8 @@ namespace note.Migrations
 
             modelBuilder.Entity("note.Models.UserAuthentication", b =>
                 {
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -80,12 +74,26 @@ namespace note.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.HasKey("Email");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasKey("UserId");
 
                     b.ToTable("UserAuthentications");
+                });
+
+            modelBuilder.Entity("note.Models.UserAuthentication", b =>
+                {
+                    b.HasOne("note.Models.User", "User")
+                        .WithOne("UserAuthentication")
+                        .HasForeignKey("note.Models.UserAuthentication", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("note.Models.User", b =>
+                {
+                    b.Navigation("UserAuthentication")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
