@@ -29,7 +29,9 @@ public class UserController: ControllerBase
             return NotFound("UserId is required");
         }
      
-        User user = _context.Users.FirstOrDefault(i => i.Id == int.Parse(userId));
+        User user = _context.Users
+            .Include(e => e.Notes)
+            .FirstOrDefault(i => i.Id == int.Parse(userId));
         return Ok(user);
     }
 }
