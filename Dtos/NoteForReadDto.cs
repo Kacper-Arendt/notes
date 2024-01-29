@@ -7,4 +7,6 @@ public class NoteForReadDto(string name, string content)
         public string Name { get; init; } = name;
         
         public string Content { get; init; } = content;
+        
+        public int UserId { get; init; }
 }

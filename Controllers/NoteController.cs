@@ -28,25 +28,42 @@ public class NoteController : ControllerBase
     
     [HttpGet]
     public IActionResult GetNotes()
-    {
-        List<Note?>? notes = _context.Notes?.ToList();
+    {    
+     string? userId = User.FindFirst("userId")?.Value; 
+     if (userId == null)
+     {
+            return NotFound("UserId is required");
+     }
+     
+     List<Note?>? notes = _context.Notes?.ToList();
+     
         
-        List<NoteForReadDto> noteDtos = _mapper.Map<List<NoteForReadDto>>(notes);
-        return Ok(noteDtos);
+     List<NoteForReadDto> noteDtos = _mapper.Map<List<NoteForReadDto>>(notes);
+     return Ok(noteDtos);
     }
     
     [HttpGet("{id}")]
-    public IActionResult GetNote(int id)
+    public async Task<IActionResult> GetNote(int id)
     {
         Note? note = GetNoteById(id);
         NoteForReadDto noteDto = _mapper.Map<NoteForReadDto>(note);
+        
         return noteDto != null ? Ok(noteDto) : NotFound();
     }
     
     [HttpPost]
     public async Task<IActionResult> CreateNote(NoteForCreateDto noteForCreate)
     {
+        string? userId = User.FindFirst("userId")?.Value;
+        User? user =  _context.Users.Find(int.Parse(userId));
+
+        if (user == null)
+        {
+            return NotFound("User is required");
+        }
+
         Note noteDb = _mapper.Map<Note>(noteForCreate);
+        noteDb.User = user;
         
         _context.Notes?.Add(noteDb);
         await _context.SaveChangesAsync();
@@ -61,10 +78,13 @@ public class NoteController : ControllerBase
         {
             return BadRequest();
         }
+        string? userId = User.FindFirst("userId")?.Value;
+
         
         Note note = _mapper.Map<Note>(noteToUpdate);
+        note.UserId = int.Parse(userId);
         
-        _context.Entry(note).State = EntityState.Modified;
+        _context.Notes.Update(note);
         
         try
         {
@@ -72,11 +92,7 @@ public class NoteController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (GetNoteById(id) == null)
-            {
                 return NotFound();
-            }
-            throw;
         }
 
         return NoContent();

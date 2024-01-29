@@ -1,9 +1,7 @@
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Dapper;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 
@@ -77,6 +75,4 @@ public class AuthHelper
 
         return tokenHandler.WriteToken(token);
     }
-
-
 }

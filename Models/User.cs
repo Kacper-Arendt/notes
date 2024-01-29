@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace note.Models;
 
@@ -12,4 +13,5 @@ public class User(string email)
     public string Email { get; set; } = email;
 
     public UserAuthentication UserAuthentication { get; set; }
+    public ICollection<Note>? Notes { get; }
 }

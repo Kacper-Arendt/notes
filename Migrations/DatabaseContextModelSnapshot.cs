@@ -38,7 +38,12 @@ namespace note.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notes");
                 });
@@ -79,6 +84,17 @@ namespace note.Migrations
                     b.ToTable("UserAuthentications");
                 });
 
+            modelBuilder.Entity("note.Models.Note", b =>
+                {
+                    b.HasOne("note.Models.User", "User")
+                        .WithMany("Notes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("note.Models.UserAuthentication", b =>
                 {
                     b.HasOne("note.Models.User", "User")
@@ -92,6 +108,8 @@ namespace note.Migrations
 
             modelBuilder.Entity("note.Models.User", b =>
                 {
+                    b.Navigation("Notes");
+
                     b.Navigation("UserAuthentication")
                         .IsRequired();
                 });
