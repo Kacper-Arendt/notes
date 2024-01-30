@@ -1,4 +1,8 @@
+using System.Text;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using note.MappingProfiles;
 using note.Models;
 
@@ -16,21 +20,62 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddCors((options) =>
+{
+    options.AddPolicy("DevCors", (corsBuilder) =>
+    {
+        corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://localhost:8000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+    options.AddPolicy("ProdCors", (corsBuilder) =>
+    {
+        corsBuilder.WithOrigins("https://myProductionSite.com")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+string? tokenKey = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters() 
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey ?? "")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
+    app.UseSwagger();    
+    app.UseCors("DevCors");
     app.UseSwaggerUI();
 }
 else
 {
     app.UseHttpsRedirection();
+    app.UseCors("ProdCors");
 }
 
 using (var scope = app.Services.CreateScope())
@@ -40,6 +85,10 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<DatabaseContext>();
     context.Database.EnsureCreated();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

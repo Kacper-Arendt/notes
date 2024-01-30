@@ -1,17 +1,19 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace note.Models;
 
-public class User(string name, string email)
+public class User(string email): BaseEntity
 {
-    public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }    
     
     [Required]
-    [MaxLength(50)]
-    public string Name { get; init; } = name;
-
-    [Required]
     [MaxLength(100)]
-    [DataType(DataType.EmailAddress)]
-    public string Email { get; init; } = email;
+    [EmailAddress]
+    public string Email { get; set; } = email;
+
+    public UserAuthentication UserAuthentication { get; set; }
+    public ICollection<Note>? Notes { get; }
 }

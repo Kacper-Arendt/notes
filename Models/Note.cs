@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace note.Models;
 
-public class Note(string content, string name)
+public class Note(string content, string name): BaseEntity
 {
-    public int Id { get; init; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
     
     [Required]
     [MaxLength(50)]
@@ -12,6 +15,8 @@ public class Note(string content, string name)
     
     [Required]
     public string Content { get; init; } = content;
-
-
+    
+    [ForeignKey("User")]
+    public Guid UserId { get; set; }
+    public User User { get; set; }
 }
