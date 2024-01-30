@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace note.Models;
 
 public class User(string email): BaseEntity
 {
-    public int Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }    
     
     [Required]
     [MaxLength(100)]

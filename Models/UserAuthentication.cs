@@ -7,7 +7,7 @@ public class UserAuthentication(byte[] passwordHash, byte[] salt)
 {
     [Key]
     [ForeignKey("User")]
-    public int UserId { get; set; }
+    public Guid UserId { get; set; }
 
     [Required]
     public byte[] PasswordHash { get; set; } = passwordHash;

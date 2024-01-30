@@ -43,7 +43,7 @@ public class AuthHelper
         return new PasswordHelper( passwordSalt, passwordHash);
     }
     
-    public string CreateToken(int userId)
+    public string CreateToken(Guid userId)
     {
         Claim[] claims = new Claim[] {
             new("userId", userId.ToString())

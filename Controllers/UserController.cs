@@ -31,7 +31,7 @@ public class UserController: ControllerBase
      
         User user = _context.Users
             .Include(e => e.Notes)
-            .FirstOrDefault(i => i.Id == int.Parse(userId));
+            .FirstOrDefault(i => i.Id == Guid.Parse(userId));
         return Ok(user);
     }
 }

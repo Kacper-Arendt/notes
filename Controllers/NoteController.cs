@@ -21,7 +21,7 @@ public class NoteController : ControllerBase
         _mapper = mapper;
     }
 
-    private Note? GetNoteById(int id)
+    private Note? GetNoteById(Guid id)
     {
         return _context.Notes?.Find(id);
     }
@@ -43,7 +43,7 @@ public class NoteController : ControllerBase
     }
     
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetNote(int id)
+    public async Task<IActionResult> GetNote(Guid id)
     {
         Note? note = GetNoteById(id);
         NoteForReadDto noteDto = _mapper.Map<NoteForReadDto>(note);
@@ -55,7 +55,7 @@ public class NoteController : ControllerBase
     public async Task<IActionResult> CreateNote(NoteForCreateDto noteForCreate)
     {
         string? userId = User.FindFirst("userId")?.Value;
-        User? user =  _context.Users.Find(int.Parse(userId));
+        User? user =  _context.Users.Find(Guid.Parse(userId));
 
         if (user == null)
         {
@@ -72,7 +72,7 @@ public class NoteController : ControllerBase
     }   
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateNote(int id, NoteForUpdateDto noteToUpdate)
+    public async Task<IActionResult> UpdateNote(Guid id, NoteForUpdateDto noteToUpdate)
     {
         if (id != noteToUpdate.Id)
         {
@@ -82,7 +82,7 @@ public class NoteController : ControllerBase
 
         
         Note note = _mapper.Map<Note>(noteToUpdate);
-        note.UserId = int.Parse(userId);
+        note.UserId = Guid.Parse(userId);;
         
         _context.Notes.Update(note);
         
@@ -99,7 +99,7 @@ public class NoteController : ControllerBase
     }  
     
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteNote(int id)
+    public async Task<IActionResult> DeleteNote(Guid id)
     {
         Note? note = GetNoteById(id);
         if (note == null)
