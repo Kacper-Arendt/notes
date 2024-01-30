@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace note.Models;
 
-public class Note(string content, string name)
+public class Note(string content, string name): BaseEntity
 {
     public int Id { get; init; }
     

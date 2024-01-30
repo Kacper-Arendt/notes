@@ -9,4 +9,8 @@ public class NoteForReadDto(string name, string content)
         public string Content { get; init; } = content;
         
         public int UserId { get; init; }
+        
+        public DateTime CreatedOn { get; set; }
+        
+        public DateTime UpdatedOn { get; set; }
 }
