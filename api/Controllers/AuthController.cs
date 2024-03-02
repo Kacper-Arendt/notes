@@ -76,13 +76,13 @@ public class AuthController : ControllerBase
 
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Incorrect credentials");
             }
             
             UserAuthentication? authUser =  _context.UserAuthentications.FirstOrDefault(u => u.UserId ==user.Id);
             if (authUser == null)
             {
-                return NotFound();
+                return NotFound("Incorrect credentials");
             }
             
             byte[] passwordHash = _authHelper.GetPasswordHash(userForLogin.Password, authUser.Salt);
@@ -90,7 +90,7 @@ public class AuthController : ControllerBase
             for (int index = 0; index < passwordHash.Length; index++)
             {
                 if (passwordHash[index] != authUser.PasswordHash[index]){
-                    return StatusCode(401, "Incorrect password!");
+                    return StatusCode(401, "Incorrect credentials");
                 }
             }
 
