@@ -24,7 +24,6 @@ builder.Services.AddCors((options) =>
 {
     options.AddPolicy("DevCors", (corsBuilder) =>
     {
-        // corsBuilder.WithOrigins("http://localhost:4200", "http://localhost:3000", "http://localhost:8000")
         corsBuilder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
             .AllowAnyMethod()
             .AllowAnyHeader()
@@ -32,11 +31,18 @@ builder.Services.AddCors((options) =>
     });
     options.AddPolicy("ProdCors", (corsBuilder) =>
     {
-        corsBuilder.WithOrigins("https://myProductionSite.com")
+        corsBuilder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
     });
+    // options.AddPolicy("ProdCors", (corsBuilder) =>
+    // {
+    //     corsBuilder.WithOrigins("https://myProductionSite.com")
+    //         .AllowAnyMethod()
+    //         .AllowAnyHeader()
+    //         .AllowCredentials();
+    // });
 });
 
 string? tokenKey = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
