@@ -17,7 +17,7 @@ public class TestController : ControllerBase
     [HttpGet("test")]
     public string test()
     {    
-        return "App and unning22";
+        return "App and working";
     }
     
     [HttpGet("test2")]
