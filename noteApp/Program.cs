@@ -19,23 +19,23 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddCors((options) =>
-{
-    options.AddPolicy("DevCors", (corsBuilder) =>
-    {
-        corsBuilder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-    options.AddPolicy("ProdCors", (corsBuilder) =>
-    {
-        corsBuilder.WithOrigins("https://notes-web-rust.vercel.app")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
+//builder.Services.AddCors((options) =>
+//{
+//    options.AddPolicy("DevCors", (corsBuilder) =>
+//    {
+//        corsBuilder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+//            .AllowAnyMethod()
+//            .AllowAnyHeader()
+//            .AllowCredentials();
+//    });
+//    options.AddPolicy("ProdCors", (corsBuilder) =>
+//    {
+//        corsBuilder.WithOrigins("https://notes-web-rust.vercel.app")
+//            .AllowAnyMethod()
+//            .AllowAnyHeader()
+//            .AllowCredentials();
+//    });
+//});
 
 string? tokenKey = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
 
@@ -66,13 +66,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseCors("DevCors");
+    //app.UseCors("DevCors");
     app.UseSwaggerUI();
 }
 else
 {
     app.UseHttpsRedirection();
-    app.UseCors("ProdCors");
+    //app.UseCors("ProdCors");
 }
 
 
