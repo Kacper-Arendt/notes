@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
-    options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 //builder.Services.AddCors((options) =>
@@ -77,13 +77,13 @@ else
 
 
 
-using (var scope = app.Services.CreateScope())
-{
-var services = scope.ServiceProvider;
+//using (var scope = app.Services.CreateScope())
+//{
+//var services = scope.ServiceProvider;
 
-var context = services.GetRequiredService<DatabaseContext>();
-context.Database.EnsureCreated();
-}
+//var context = services.GetRequiredService<DatabaseContext>();
+//context.Database.EnsureCreated();
+//}
 
 
 app.UseDeveloperExceptionPage();
