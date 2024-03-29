@@ -19,7 +19,7 @@ public class TestController : ControllerBase
     [HttpGet("test")]
     public string test()
     {    
-        return "App and working2" + _config.GetConnectionString("DefaultConnection");
+        return "App and working22";
     }
     
     [HttpGet("test2")]
