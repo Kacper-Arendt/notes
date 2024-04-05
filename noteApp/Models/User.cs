@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace noteApp.Models;
 
-public class User(string email): BaseEntity
+public class User(string email) : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }    
-    
+    public Guid Id { get; set; }
+
     [Required]
     [MaxLength(100)]
     [EmailAddress]

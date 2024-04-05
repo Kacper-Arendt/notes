@@ -14,6 +14,6 @@ public class UserAuthentication(byte[] passwordHash, byte[] salt)
 
     [Required]
     public byte[] Salt { get; set; } = salt;
-    
+
     public User User { get; set; }
 }

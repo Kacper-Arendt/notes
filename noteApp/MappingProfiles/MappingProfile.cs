@@ -4,7 +4,7 @@ using noteApp.Models;
 
 namespace noteApp.MappingProfiles;
 
-public class MappingProfile: Profile
+public class MappingProfile : Profile
 {
     public MappingProfile()
     {
@@ -13,5 +13,13 @@ public class MappingProfile: Profile
         CreateMap<NoteForUpdateDto, Note>();
 
         CreateMap<UserAuthForReadDto, UserAuthentication>();
+
+        CreateMap<TaskForCreate, TaskItem>();
+        CreateMap<TaskItem, TaskForRead>();
+        CreateMap<TaskForUpdate, TaskItem>();
+
+        CreateMap<TaskListForCreate, TaskList>();
+        CreateMap<TaskList, TaskListForRead>();
+        CreateMap<TaskListForUpdate, TaskList>();
     }
 }
