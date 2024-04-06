@@ -6,10 +6,9 @@ public class TaskForUpdate(
     string name,
     DateTime? dueDate,
     Priority? priority,
-    Status status)
+    Status status
+    )
 {
-    public Guid UserId { get; init; }
-
     public string Name { get; set; } = name;
 
     public DateTime? DueDate { get; set; } = dueDate;
@@ -17,4 +16,5 @@ public class TaskForUpdate(
     public Priority? Priority { get; set; } = priority;
 
     public Status Status { get; set; } = status;
+    
 }

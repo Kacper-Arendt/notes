@@ -1,5 +1,4 @@
 using noteApp.Enums;
-using noteApp.Models;
 
 namespace noteApp.Dtos;
 
@@ -8,7 +7,7 @@ public class TaskForCreate(
     DateTime? dueDate,
     Priority? priority,
     Status status,
-    List<TaskItem> tasksList)
+    Guid taskListId)
 {
     public string Name { get; set; } = name;
 
@@ -17,5 +16,6 @@ public class TaskForCreate(
     public Priority? Priority { get; set; } = priority;
 
     public Status Status { get; set; } = status;
-    public List<TaskItem> TasksList { get; set; } = tasksList;
+    
+    public Guid TaskListId { get; set; } = taskListId;
 }

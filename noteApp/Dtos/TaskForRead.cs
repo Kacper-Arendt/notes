@@ -7,10 +7,10 @@ public class TaskForRead(
     string name,
     DateTime? dueDate,
     Priority? priority,
-    Status status,
-    List<TaskItem> tasksList)
+    Status status
+    )
 {
-    public Guid UserId { get; init; }
+    public Guid TaskId { get; init; }
 
     public string Name { get; set; } = name;
 
@@ -19,8 +19,6 @@ public class TaskForRead(
     public Priority? Priority { get; set; } = priority;
 
     public Status Status { get; set; } = status;
-
-    public List<TaskItem> TasksList { get; set; } = tasksList;
 
     public DateTime CreatedOn { get; set; }
 

@@ -20,6 +20,7 @@ public class MappingProfile : Profile
 
         CreateMap<TaskListForCreate, TaskList>();
         CreateMap<TaskList, TaskListForRead>();
+        CreateMap<TaskList, TaskListForReadBasic>();
         CreateMap<TaskListForUpdate, TaskList>();
     }
 }

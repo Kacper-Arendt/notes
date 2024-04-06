@@ -23,8 +23,12 @@ public class TaskListController : Controller
     [HttpGet]
     public async Task<IActionResult> GetTaskLists()
     {
-        var taskLists = await _context.TaskList.ToListAsync();
-        var noteDtos = _mapper.Map<List<TaskList>>(taskLists);
+        var taskLists = await _context
+            .TaskList
+            .ToListAsync();
+        
+        var noteDtos = _mapper
+            .Map<List<TaskListForReadBasic>>(taskLists);
 
         return Ok(noteDtos);
     }
@@ -32,7 +36,10 @@ public class TaskListController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTaskList(Guid id)
     {
-        var taskList = await _context.TaskList.FindAsync(id);
+        var taskList = await _context
+            .TaskList
+            .Include(e => e.TasksList)
+            .FirstOrDefaultAsync(i => i.ListId == id);
 
         if (taskList == null) return NotFound();
         var taskListDto = _mapper.Map<TaskListForRead>(taskList);
@@ -48,7 +55,10 @@ public class TaskListController : Controller
 
         TaskList list = _mapper.Map<TaskList>(taskListForCreate);
 
-        _context.TaskList.Add(list);
+        _context
+            .TaskList
+            .Add(list);
+        
         await _context.SaveChangesAsync();
 
         return Ok(list);
@@ -71,7 +81,9 @@ public class TaskListController : Controller
 
         var taskToUpdateDto = _mapper.Map<TaskList>(taskListDto);
 
-        _context.TaskList.Update(taskToUpdateDto);
+        _context
+            .TaskList
+            .Update(taskToUpdateDto);
 
         try
         {
@@ -88,7 +100,10 @@ public class TaskListController : Controller
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTaskList(Guid id)
     {
-        var taskList = await _context.TaskList.FindAsync(id);
+        var taskList = await _context
+            .TaskList
+            .FindAsync(id);
+        
         if (taskList == null) return NotFound();
 
         _context.TaskList.Remove(taskList);
