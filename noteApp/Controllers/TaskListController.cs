@@ -67,32 +67,20 @@ public class TaskListController : Controller
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateTaskList(Guid id, TaskListForUpdate taskListDto)
     {
-        if (!ModelState.IsValid || id != taskListDto.ListId)
+        if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
         var taskListToUpdate = await _context
             .TaskList
-            .AsNoTracking()
             .FirstOrDefaultAsync(i => i.ListId == id);
 
         if (taskListToUpdate == null) return NotFound();
 
-        var taskToUpdateDto = _mapper.Map<TaskList>(taskListDto);
+        taskListToUpdate.Title = taskListDto.Title;
 
-        _context
-            .TaskList
-            .Update(taskToUpdateDto);
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return NotFound();
-        }
+        await _context.SaveChangesAsync();
         return NoContent();
 
     }
