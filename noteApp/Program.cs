@@ -8,11 +8,10 @@ using noteApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-IConfiguration config = new ConfigurationBuilder()
-    .AddJsonFile("appSettings.json")
-    .Build();
 
 builder.Services.AddControllers();
+
+Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 builder.Services.AddDbContext<DatabaseContext>(options =>
 {
@@ -40,8 +39,9 @@ builder.Services.AddCors((options) =>
 string? tokenKey = builder.Configuration.GetSection("AppSettings:TokenKey").Value;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options => {
-        options.TokenValidationParameters = new TokenValidationParameters() 
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey ?? "")),
@@ -77,13 +77,13 @@ else
 
 
 
-//using (var scope = app.Services.CreateScope())
-//{
-//var services = scope.ServiceProvider;
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
-//var context = services.GetRequiredService<DatabaseContext>();
-//context.Database.EnsureCreated();
-//}
+    var context = services.GetRequiredService<DatabaseContext>();
+    context.Database.EnsureCreated();
+}
 
 
 app.UseDeveloperExceptionPage();

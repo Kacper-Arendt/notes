@@ -29,7 +29,7 @@ public class AuthHelper
             numBytesRequested: 256 / 8
         );
     }
-    
+
     public PasswordHelper HashPassword(string Password)
     {
         byte[] passwordSalt = new byte[128 / 8];
@@ -40,15 +40,15 @@ public class AuthHelper
 
         byte[] passwordHash = GetPasswordHash(Password, passwordSalt);
 
-        return new PasswordHelper( passwordSalt, passwordHash);
+        return new PasswordHelper(passwordSalt, passwordHash);
     }
-    
+
     public string CreateToken(Guid userId)
     {
         Claim[] claims = new Claim[] {
             new("userId", userId.ToString())
         };
-            
+
         string? tokenKeyString = _config.GetSection("AppSettings:TokenKey").Value;
 
         SymmetricSecurityKey tokenKey = new SymmetricSecurityKey(
@@ -58,7 +58,7 @@ public class AuthHelper
         );
 
         SigningCredentials credentials = new SigningCredentials(
-            tokenKey, 
+            tokenKey,
             SecurityAlgorithms.HmacSha512Signature
         );
 

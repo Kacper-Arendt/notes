@@ -2,23 +2,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace noteApp.Models;
 
-public class DatabaseContext: DbContext
+public class DatabaseContext : DbContext
 {
-    public DbSet<User>Users { get; set; }
+    public DbSet<User> Users { get; set; }
     public DbSet<UserAuthentication> UserAuthentications { get; set; }
     public DbSet<Note> Notes { get; set; }
     public DbSet<Movie> Movies { get; set; }
+    public DbSet<TaskList> TaskList { get; set; }
+    public DbSet<TaskItem> TaskItem { get; set; }
 
 
     public DatabaseContext(DbContextOptions options) : base(options)
     {
-        
+
     }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
     }
-    
+
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
         OnBeforeSaving();
@@ -26,7 +28,7 @@ public class DatabaseContext: DbContext
     }
 
     public override async Task<int> SaveChangesAsync(
-        bool acceptAllChangesOnSuccess, 
+        bool acceptAllChangesOnSuccess,
         CancellationToken cancellationToken = default(CancellationToken)
     )
     {

@@ -38,7 +38,7 @@ public class AuthController : ControllerBase
                 return BadRequest("Password and password confirmation do not match.");
             }
 
-            bool userExist =  _context.Users.FirstOrDefault(e => e.Email == userForCreate.Email) != null;
+            bool userExist = _context.Users.FirstOrDefault(e => e.Email == userForCreate.Email) != null;
 
             if (userExist)
             {
@@ -51,10 +51,10 @@ public class AuthController : ControllerBase
             UserAuthentication userForRegister = new UserAuthentication(passwordHelper.PasswordHash, passwordHelper.PasswordSalt);
             userForRegister.User = user;
             user.UserAuthentication = userForRegister;
-            
-            _context.Users.Add(user);;
+
+            _context.Users.Add(user); ;
             _context.UserAuthentications.Add(userForRegister);
-            
+
             int created = await _context.SaveChangesAsync();
 
             return created > 0 ? Ok() : BadRequest();
@@ -78,18 +78,19 @@ public class AuthController : ControllerBase
             {
                 return NotFound("Incorrect credentials");
             }
-            
-            UserAuthentication? authUser =  _context.UserAuthentications.FirstOrDefault(u => u.UserId ==user.Id);
+
+            UserAuthentication? authUser = _context.UserAuthentications.FirstOrDefault(u => u.UserId == user.Id);
             if (authUser == null)
             {
                 return NotFound("Incorrect credentials");
             }
-            
+
             byte[] passwordHash = _authHelper.GetPasswordHash(userForLogin.Password, authUser.Salt);
 
             for (int index = 0; index < passwordHash.Length; index++)
             {
-                if (passwordHash[index] != authUser.PasswordHash[index]){
+                if (passwordHash[index] != authUser.PasswordHash[index])
+                {
                     return StatusCode(401, "Incorrect credentials");
                 }
             }
